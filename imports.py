@@ -14,4 +14,6 @@ import dateutil.parser
 import unicodedata
 #To add wait time between requests
 import time
+#For manage environment variables
+From dotenv import load_dotenv
 #Credit to Andrew Edward for guidelines
