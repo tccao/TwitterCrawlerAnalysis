@@ -29,7 +29,7 @@ def create_headers(bearer_token):
     return headers
 
 def create_url(keyword,end_date, case, max_results = 10):
-    if case == 1:    
+    if case == 1:
         # First using recent search url API to pull interested keyword
         search_url = "https://api.twitter.com/2/tweets/search/recent"
         # #Querry params for recent search
@@ -42,7 +42,7 @@ def create_url(keyword,end_date, case, max_results = 10):
                         'user.fields': 'id,name,username,created_at,description,public_metrics,verified',
                         'place.fields': 'full_name,id,country,country_code,geo,name,place_type',
                         'next_token': {}}
-        
+
     if case == 2:
         #Tweet search url
         search_url = "https://api.twitter.com/2/tweets"
@@ -52,7 +52,7 @@ def create_url(keyword,end_date, case, max_results = 10):
                         'tweet.fields': 'author_id,conversation_id,created_at,id,in_reply_to_user_id,public_metrics,text',
                         'user.fields': 'created_at,description,id,location,name,username,verified',
                         'next_token': {}}
-        
+
     if case == 3:
         #Retweet search url
         search_url = "https://api.twitter.com/2/tweets/"+keyword+"/retweeted_by"
@@ -62,7 +62,7 @@ def create_url(keyword,end_date, case, max_results = 10):
                         'user.fields': 'created_at,description,id,location,name,username,verified',
                         'max_results': max_results,#Min 10, max 100
                         'pagination_token': {}}
-    
+
     return (search_url, query_params)
 
 def connect_to_endpoint(url, headers, params, case,next_token = None):
@@ -92,7 +92,7 @@ def append_to_csv(json_response, fileName):
     #Open OR create the target CSV file
     csvFile = open(fileName, "a", newline="", encoding='utf-8')
     csvWriter = csv.writer(csvFile)
-    
+
     #Loop through each tweet
     for tweet in json_response['data']:
         # Author ID
@@ -100,7 +100,7 @@ def append_to_csv(json_response, fileName):
         # Time created
         tweet_created_at = dateutil.parser.parse(tweet['created_at'])
         # Geolocation
-        if ('geo' in tweet):   
+        if ('geo' in tweet):
             geo = tweet['geo']['place_id']
         else:
             geo = ""
@@ -120,9 +120,9 @@ def append_to_csv(json_response, fileName):
         source = tweet['source']
         # Tweet text
         text = tweet['text']
-        
+
         # Assemble all data in a list
-        column_headers = [author_id, tweet_created_at, geo, conversation_id, tweet_id, lang, like_count, quote_count, 
+        column_headers = [author_id, tweet_created_at, geo, conversation_id, tweet_id, lang, like_count, quote_count,
                           reply_count, retweet_count, source, text]
         # Append the result to the CSV file
         csvWriter.writerow(column_headers)
@@ -130,7 +130,7 @@ def append_to_csv(json_response, fileName):
     # When done, close the CSV file
     csvFile.close()
     # Print the number of tweets for this iteration
-    print("Number of Tweets added to file: ", counter) 
+    print("Number of Tweets added to file: ", counter)
     return tweet_id_list
 
 def append_to_csv_retweet_user(ori_tweet_id,json_response, fileName):
@@ -139,7 +139,7 @@ def append_to_csv_retweet_user(ori_tweet_id,json_response, fileName):
     #Open OR create the target CSV file
     csvFile = open(fileName, "a", newline="", encoding='utf-8')
     csvWriter = csv.writer(csvFile)
-    
+
     #Loop through each users
     for users_data in json_response['data']:
         # Author ID
@@ -156,12 +156,12 @@ def append_to_csv_retweet_user(ori_tweet_id,json_response, fileName):
         # Append the result to the CSV file
         csvWriter.writerow(column_headers)
         counter += 1
-    
+
     # When done, close the CSV file
     csvFile.close()
     # Print the number of tweets for this iteration
-    print("Number of retweet users added to file: ", counter) 
-     
+    print("Number of retweet users added to file: ", counter)
+
 def append_to_csv_retweet_tweets(ori_tweet_id,json_response, fileName):
     #A counter variable
     counter = 0
@@ -170,7 +170,7 @@ def append_to_csv_retweet_tweets(ori_tweet_id,json_response, fileName):
     #Open OR create the target CSV file
     csvFile = open(fileName, "a", newline="", encoding='utf-8')
     csvWriter = csv.writer(csvFile)
-    
+
     #Loop through each retweet_tweets
     if 'includes' in json_response:
         for tweets in json_response['includes']['tweets']:
@@ -181,7 +181,7 @@ def append_to_csv_retweet_tweets(ori_tweet_id,json_response, fileName):
             tweet_id_list.append(str(tweets_id))
             # Time created
             tweets_data_created_at = dateutil.parser.parse(tweets['created_at'])
-            # conversation_id 
+            # conversation_id
             conversation_id = tweets['conversation_id']
             if('referenced_tweets' in tweets):
                 # referenced tweet id
@@ -206,35 +206,15 @@ def append_to_csv_retweet_tweets(ori_tweet_id,json_response, fileName):
     # When done, close the CSV file
     csvFile.close()
     # Print the number of tweets for this iteration
-    print("Number of retweet tweets added to file: ", counter) 
+    print("Number of retweet tweets added to file: ", counter)
     return tweet_id_list
 
 def main():
-    # #Inputs for the request
-    # os.environ['TOKEN'] = 'AAAAAAAAAAAAAAAAAAAAACNMYQEAAAAADF5%2Fp5%2Fw%2FRW1OhMju0XsTjTa%2F%2FQ%3DPQT9mLoy3xLgo1T0h1oeOPqWoXbuHhfwTdwPFrmxET6teLcsG1'
-    # bearer_token = auth()
-    # headers = create_headers(bearer_token)
-    # keyword = "bitcoin lang:en"
-    # start_time = "2022-01-18T14:26:00.000Z"
-    # end_time =   "2022-01-23T09:37:00.000Z"
-    # max_results = 15
-
-    # url = create_url(keyword,start_time,end_time,max_results)
-    # json_response= connect_to_endpoint(url[0],headers,url[1]);
-    # print(json.dumps(json_response, indent=4, sort_keys=True))
-    # #Save result to JSON file
-    # with open("twit_data.json",'w') as f:
-    #     json.dump(json_response, f)
-    # print("end")
-    a=1
-
-if __name__ == '__main__':
-    main()
-    os.environ['TOKEN'] = 'AAAAAAAAAAAAAAAAAAAAACNMYQEAAAAADF5%2Fp5%2Fw%2FRW1OhMju0XsTjTa%2F%2FQ%3DPQT9mLoy3xLgo1T0h1oeOPqWoXbuHhfwTdwPFrmxET6teLcsG1'
+    os.environ['TOKEN'] = '<YOUR_BEARER_TOKEN>'
     #URL Authentication and querry process
     bearer_token = auth()
     headers = create_headers(bearer_token)
-    
+
     # First keyword for vaccination status with original tweets only
     keyword = "#covid19 #vaccination lang:en -is:retweet -is:reply -is:quote"
     end_time =   "2022-01-22T00:00:01.000Z"
@@ -248,7 +228,7 @@ if __name__ == '__main__':
     next_token = None
     count=0
     tweets_id_list=[]
-    
+
     # Create file
     csvFile = open("original_tweet_data.csv", "a", newline="", encoding='utf-8')
     csvWriter = csv.writer(csvFile)
@@ -259,12 +239,12 @@ if __name__ == '__main__':
     csvWriter = csv.writer(csvFile)
     csvWriter.writerow(['retweet_id','author_id','name_user','user_location'])
     csvFile.close()
-    
+
     csvFile = open("retweet_tweets_data.csv", "a", newline="", encoding='utf-8')
     csvWriter = csv.writer(csvFile)
     csvWriter.writerow(['original_tweet_id','author_id','tweets_id','tweets_data_created_at','conversation_id','referenced_tweets_id','referenced_tweets_type','retweet_count','reply_count','like_count','quote_count'])
     csvFile.close()
-    
+
     #Loop condition until we meet max_counts
     while flag:
         if count >= max_counts:
@@ -275,7 +255,7 @@ if __name__ == '__main__':
         url_tweet = create_url(keyword,end_time,case,max_counts)
         json_response_tweet = connect_to_endpoint(url_tweet[0], headers, url_tweet[1], case,next_token)
         result_count = json_response_tweet['meta']['result_count']
-        
+
         if 'next_token' in json_response_tweet['meta']:
             # Save the token to use for next call
             next_token = json_response_tweet['meta']['next_token']
@@ -303,10 +283,10 @@ if __name__ == '__main__':
             flag = False
             next_token = None
         time.sleep(5)
-    
+
     #Reset count and starting retweet data
     retweets_id_list=[]
-   
+
     for i in range(0,len(tweets_id_list)):
         count=0
         flag = True
@@ -321,7 +301,7 @@ if __name__ == '__main__':
             url_tweet = create_url(tweets_id_list[i],None,case,max_counts)
             json_response_retweet = connect_to_endpoint(url_tweet[0], headers, url_tweet[1], case,next_token)
             result_count = json_response_retweet['meta']['result_count']
-            
+
             if 'next_token' in json_response_retweet['meta']:
                 # Save the token to use for next call
                 next_token = json_response_retweet['meta']['next_token']
@@ -335,7 +315,7 @@ if __name__ == '__main__':
                     print("Total # of Tweets added: ", no_current_tweet)
                     print("-------------------")
                     time.sleep(5)
-            
+
             # If no next token exists
             else:
                 if result_count is not None and result_count > 0:
@@ -352,4 +332,6 @@ if __name__ == '__main__':
                 flag = False
                 next_token = None
             time.sleep(5)
-  
+
+if __name__ == '__main__':
+    main()
