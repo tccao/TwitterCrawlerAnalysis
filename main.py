@@ -4,8 +4,6 @@ import requests
 import os
 # For dealing with json responses we receive from the API
 import json
-# For displaying the data after
-import pandas as pd
 # For saving the response data in CSV format
 import csv
 # For parsing the dates received from twitter in readable formats
