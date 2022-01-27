@@ -16,7 +16,7 @@ import time
 #Credit to Andrew Edward for guidelines
 
 #Export bearer_token to set environment variables
-os.environ['TOKEN'] = 'YOUR_BEARER_TOKEN'
+os.environ['TOKEN'] = 'AAAAAAAAAAAAAAAAAAAAACNMYQEAAAAADF5%2Fp5%2Fw%2FRW1OhMju0XsTjTa%2F%2FQ%3DPQT9mLoy3xLgo1T0h1oeOPqWoXbuHhfwTdwPFrmxET6teLcsG1'
 max_nodes=500
 
 def auth():
@@ -128,7 +128,7 @@ def append_to_csv(json_response, fileName):
     # When done, close the CSV file
     csvFile.close()
     # Print the number of tweets for this iteration
-    print("Number of Tweets added to file: ", counter)
+    print("Number of Users added to file: ", counter)
     return tweet_id_list
 
 def append_to_csv_retweet_user(ori_tweet_id,json_response, fileName):
@@ -208,7 +208,7 @@ def append_to_csv_retweet_tweets(ori_tweet_id,json_response, fileName):
     return tweet_id_list
 
 def main():
-    os.environ['TOKEN'] = '<YOUR_BEARER_TOKEN>'
+    # os.environ['TOKEN'] = '<YOUR_BEARER_TOKEN>'
     #URL Authentication and querry process
     bearer_token = auth()
     headers = create_headers(bearer_token)
@@ -220,7 +220,7 @@ def main():
     max_nodes = 500
     #Maximum number of retweet/tweets/Replies per request
     max_counts = 50
-    #Number of current tweets collected so far
+    #Number of current users/nodes collected so far
     no_current_tweet =0
     flag = True
     next_token = None
@@ -263,7 +263,7 @@ def main():
                 tweets_id_list=tweets_id_list+(temp)
                 count += result_count
                 no_current_tweet += result_count
-                print("Total # of Tweets added: ", no_current_tweet)
+                print("Total # of Users added: ", no_current_tweet)
                 print("-------------------")
                 time.sleep(5)
         # If no next token exists
