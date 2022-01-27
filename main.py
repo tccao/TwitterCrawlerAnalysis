@@ -16,7 +16,7 @@ import time
 #Credit to Andrew Edward for guidelines
 
 #Export bearer_token to set environment variables
-bearer_token = os.environ.get("BEARER_TOKEN")
+os.environ['TOKEN'] = 'YOUR_BEARER_TOKEN'
 max_nodes=500
 
 def auth():
@@ -120,8 +120,8 @@ def append_to_csv(json_response, fileName):
         text = tweet['text']
 
         # Assemble all data in a list
-        column_headers = [author_id, tweet_created_at, geo, conversation_id, tweet_id, lang, like_count, quote_count,
-                          reply_count, retweet_count, source, text]
+        column_headers = [author_id, tweet_created_at, geo, conversation_id, tweet_id, lang, retweet_count,
+                  reply_count, like_count, quote_count,source, text]
         # Append the result to the CSV file
         csvWriter.writerow(column_headers)
         counter += 1
